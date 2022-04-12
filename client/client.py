@@ -25,3 +25,25 @@ class Client:
     @property
     def identity(self) -> binascii:
       return binascii.hexlify(self._public_key.exportKey(format='DER')).decode('ascii')
+
+class Transaction:
+  identity: str
+  value: float
+  time: datetime
+  def __init__(self, sender, recipient, value) -> None:
+    self.sender = sender
+    self.recipient = recipient
+    self.value = value
+    self.time = datetime.datetime.now()
+
+  def to_dict(self):
+   if self.sender == "Genesis":
+      self.identity = "Genesis"
+   else:
+      self.identity = self.sender.identity
+
+   return collections.OrderedDict({
+      'sender': self.identity,
+      'recipient': self.recipient,
+      'value': self.value,
+      'time' : self.time})

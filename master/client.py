@@ -27,7 +27,6 @@ class Client:
       return binascii.hexlify(self._public_key.exportKey(format='DER')).decode('ascii')
 
 class Transaction:
-  identity: str
   value: float
   time: datetime
   def __init__(self, sender, recipient, value) -> None:
@@ -36,14 +35,47 @@ class Transaction:
     self.value = value
     self.time = datetime.datetime.now()
 
-  def to_dict(self):
+  def to_dict(self) -> dict:
    if self.sender == "Genesis":
-      self.identity = "Genesis"
+      identity = "Genesis"
    else:
-      self.identity = self.sender.identity
+      identity = self.sender.identity
 
    return collections.OrderedDict({
-      'sender': self.identity,
+      'sender': identity,
       'recipient': self.recipient,
       'value': self.value,
       'time' : self.time})
+
+  def sign_transaction(self) -> binascii:
+   private_key = self.sender._private_key
+   signer = PKCS1_v1_5.new(private_key)
+   h = SHA.new(str(self.to_dict()).encode('utf8'))
+   return binascii.hexlify(signer.sign(h)).decode('ascii')
+
+  def display_transaction(Transaction):
+   #for transaction in transactions:
+   dict = Transaction.to_dict()
+   send = str(dict['sender'])
+   print ("sender: " + send)
+   print ('-----')
+   print ("recipient: " + dict['recipient'])
+   print ('-----')
+   print ("value: " + str(dict['value']))
+   print ('-----')
+   print ("time: " + str(dict['time']))
+   print ('-----')
+
+Dinesh = Client()
+Ramesh = Client()
+Seema = Client()
+Vijay = Client()
+transactions = []
+t1 = Transaction(
+   Dinesh,
+   Ramesh.identity,
+   15.0
+)
+t1.display_transaction()
+print(t1.sign_transaction())
+transactions.append(t1)

@@ -33,10 +33,12 @@ blockchain = [Block.genesisblock()]
 prevblock = blockchain[0]
 
 timer = t.time()
-for i in range (0,7):
+
+
+for i in range (0,100):
     addblock = Block.newblock(prevblock)
     blockchain.append(addblock)
-    prevblock =addblock
+    prevblock = addblock
 
     print("Block ID #"+str(addblock.index))
     print("Timestamp: "+str(addblock.timestamp))
